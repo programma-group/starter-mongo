@@ -1,0 +1,44 @@
+{
+  "name": "starter-mongo",
+  "version": "1.0.0",
+  "description": "A starter for NodeJS apps using MongoDB",
+  "main": "start.js",
+  "scripts": {
+    "prod": "node ./start.js",
+    "watch": "nodemon ./src/start.js --ignore public/",
+    "start": "concurrently \"npm run watch\" \"npm run eslint\"",
+    "eslint": "esw -w . --ext .js",
+    "test": "nyc mocha --timeout 100000 --exit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/programma-group/starter-mongo.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/programma-group/starter-mongo/issues"
+  },
+  "homepage": "https://github.com/programma-group/starter-mongo#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
+    "dotenv": "^6.1.0",
+    "express": "^4.16.4",
+    "express-validator": "^5.3.0",
+    "helmet": "^3.15.0",
+    "mongoose": "^5.3.11"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.2.0",
+    "concurrently": "^4.0.1",
+    "eslint": "^5.9.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-watch": "^4.0.2",
+    "mocha": "^5.2.0",
+    "nodemon": "^1.18.6",
+    "nyc": "^13.1.0"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "exclude": [
+    "coverage/**",
+    "test/**",
+    "src/start.js",
+    "testServer.js",
+    "data/**",
+    "src/utils/errorHandlers.js"
+  ],
+  "check-coverage": true,
+  "per-file": true,
+  "lines": 85,
+  "functions": 99,
+  "reporter": [
+    "html",
+    "text-summary"
+  ],
+  "cache": true,
+  "all": true,
+  "watermarks": {
+    "lines": [80, 95],
+    "functions": [80, 95],
+    "branches": [80, 95],
+    "statements": [80, 95]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "env": {
+    "mocha": true
+  },
+  "extends": "airbnb-base",
+  "rules": {
+    "no-underscore-dangle": ["error", { "allow": ["_id", "_doc"] }],
+    "no-param-reassign": ["error", { "props": false }],
+    "no-unused-vars": [
+      "error",
+      {
+        "varsIgnorePattern": "should"
+      }
+    ],
+    "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/*.test.js"]}]
+  }
+}
