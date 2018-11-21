@@ -5,8 +5,8 @@ const expressValidator = require('express-validator');
 const helmet = require('helmet');
 const passport = require('passport');
 
-const testRoutes = require('./routes/test');
 const errorHandlers = require('./utils/errorHandlers');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 
@@ -26,8 +26,9 @@ app.use((req, res, next) => {
 
 app.use(passport.initialize());
 app.use(passport.session());
+require('./utils/passport');
 
-app.use('/', testRoutes);
+app.use('/', authRoutes);
 
 // If that above routes didnt work, we 404 them and forward to error handler
 app.use(errorHandlers.notFound);

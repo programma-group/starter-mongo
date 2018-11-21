@@ -4,7 +4,7 @@
     "test/**",
     "src/start.js",
     "testServer.js",
-    "data/**",
+    "src/data/**",
     "src/utils/errorHandlers.js"
   ],
   "check-coverage": true,
