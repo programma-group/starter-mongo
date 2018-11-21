@@ -8,7 +8,10 @@
     "watch": "nodemon ./src/start.js --ignore public/",
     "start": "concurrently \"npm run watch\" \"npm run eslint\"",
     "eslint": "esw -w . --ext .js",
-    "test": "nyc mocha --timeout 100000 --exit"
+    "test": "nyc mocha --timeout 100000 --exit",
+    "createuser": "node ./src/data/loadInitialData.js --create-user",
+    "deleteall": "node ./src/data/loadInitialData.js --delete-all",
+    "rebuild": "node ./src/data/loadInitialData.js --delete-all && node ./src/data/loadInitialData.js --create-user"
   },
   "repository": {
     "type": "git",
@@ -27,7 +30,12 @@
     "express": "^4.16.4",
     "express-validator": "^5.3.0",
     "helmet": "^3.15.0",
-    "mongoose": "^5.3.11"
+    "mongoose": "^5.3.11",
+    "mongoose-mongodb-errors": "0.0.2",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
+    "passport-local-mongoose": "^5.0.1",
+    "validator": "^10.9.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",

@@ -14,14 +14,18 @@ if (process.env.NODE_ENV === 'test') {
   port = process.env.PORT;
 }
 
-mongoose.connect(database, { useNewUrlParser: true });
+mongoose.connect(database, {
+  useNewUrlParser: true,
+  useCreateIndex: true,
+});
+
 mongoose.Promise = global.Promise;
 mongoose.connection.on('error', (err) => {
   console.error(err.message);
 });
 
 // Import all of our models
-
+require('./models/User');
 
 // Start our app!
 const app = require('./app');

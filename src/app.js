@@ -3,6 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
 const helmet = require('helmet');
+const passport = require('passport');
 
 const testRoutes = require('./routes/test');
 const errorHandlers = require('./utils/errorHandlers');
@@ -22,6 +23,9 @@ app.use((req, res, next) => {
   res.locals.user = req.user || null;
   next();
 });
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/', testRoutes);
 
