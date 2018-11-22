@@ -7,6 +7,7 @@ const passport = require('passport');
 
 const errorHandlers = require('./utils/errorHandlers');
 const authRoutes = require('./routes/auth');
+const userRoutes = require('./routes/user');
 
 const app = express();
 
@@ -29,6 +30,11 @@ app.use(passport.session());
 require('./utils/passport');
 
 app.use('/', authRoutes);
+app.use(
+  '/profile',
+  passport.authenticate('jwt', { session: false }),
+  userRoutes,
+);
 
 // If that above routes didnt work, we 404 them and forward to error handler
 app.use(errorHandlers.notFound);

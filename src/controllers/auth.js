@@ -27,15 +27,13 @@ exports.lostPassword = async (req, res) => {
 
     const { email, name } = user;
 
-    /* istanbul ignore if */
-    if (process.env.NODE_ENV !== 'test') {
-      await mail.send({
-        email,
-        subject: 'Password Reset',
-        name,
-        filename: 'passwordReset',
-      });
-    }
+    await mail.send({
+      email,
+      subject: 'Password Reset',
+      name,
+      token: user.resetPasswordToken,
+      filename: 'passwordReset',
+    });
   }
 
   return res.json(req.body);

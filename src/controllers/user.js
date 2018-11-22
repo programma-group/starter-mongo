@@ -12,6 +12,7 @@ exports.validateRegister = (req, res, next) => {
   });
   req.sanitizeBody('name');
 
+  req.checkBody('name', 'Name cannot be blank!').notEmpty();
   req.checkBody('password', 'Password cannot be blank!').notEmpty();
   req.checkBody('password-confirm', 'Confirmed password cannot be blank!').notEmpty();
   req.checkBody('password-confirm', 'Your passwords do not match').equals(req.body.password);
