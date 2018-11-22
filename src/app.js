@@ -4,7 +4,11 @@ const bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
 const helmet = require('helmet');
 const passport = require('passport');
+const expressWinston = require('express-winston');
+const winston = require('winston');
+const swaggerUi = require('swagger-ui-express');
 
+const swaggerSpec = require('./utils/swagger');
 const errorHandlers = require('./utils/errorHandlers');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
@@ -29,6 +33,20 @@ app.use(passport.initialize());
 app.use(passport.session());
 require('./utils/passport');
 
+app.use(expressWinston.logger({
+  transports: [
+    new winston.transports.Console(),
+  ],
+  format: winston.format.combine(
+    winston.format.json(),
+  ),
+}));
+
+const options = {
+  explorer: true,
+};
+
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, options));
 app.use('/', authRoutes);
 app.use(
   '/profile',
@@ -36,13 +54,19 @@ app.use(
   userRoutes,
 );
 
-// If that above routes didnt work, we 404 them and forward to error handler
+app.use(expressWinston.errorLogger({
+  transports: [
+    new winston.transports.Console(),
+  ],
+  format: winston.format.combine(
+    winston.format.json(),
+  ),
+}));
+
 app.use(errorHandlers.notFound);
 
-// One of our error handlers will see if these errors are just validation errors
 app.use(errorHandlers.flashValidationErrors);
 
-// production error handler
 app.use(errorHandlers.productionErrors);
 
 module.exports = app;

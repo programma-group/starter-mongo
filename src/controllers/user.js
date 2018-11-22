@@ -20,10 +20,10 @@ exports.validateRegister = (req, res, next) => {
   const errors = req.validationErrors();
 
   if (errors) {
-    res.status(400).json(errors);
-    return;
+    return res.status(400).json(errors);
   }
-  next();
+
+  return next();
 };
 
 exports.register = async (req, res, next) => {

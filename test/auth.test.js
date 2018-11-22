@@ -262,7 +262,7 @@ describe('The auth:', () => {
       'password-confirm': 'abc12345678',
     };
 
-    chai.request(app).post('/password/verify').send(data).end((err, res) => {
+    chai.request(app).post('/password/reset').send(data).end((err, res) => {
       res.should.have.status(400);
       res.body.should.have.property('isValid').eql(false);
       done();
@@ -357,7 +357,7 @@ describe('The auth:', () => {
         res.should.have.status(200);
         res.body.should.have.property('success').eql(true);
 
-        User.findOne({ email: 'john@doe.com'}).then((updatedUser) => {
+        User.findOne({ email: 'john@doe.com' }).then((updatedUser) => {
           updatedUser.toJSON().should.not.have.property('resetPasswordToken');
           done();
         });

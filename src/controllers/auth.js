@@ -46,10 +46,10 @@ exports.validatePasswordToken = async (req, res, next) => {
   });
 
   if (!user) {
-    res.status(400).json({ isValid: false });
+    return res.status(400).json({ isValid: false });
   }
   req.user = user;
-  next();
+  return next();
 };
 
 exports.validatePasswordReturn = (req, res) => {
@@ -64,9 +64,10 @@ exports.validatePasswordInput = (req, res, next) => {
   const errors = req.validationErrors();
 
   if (errors) {
-    res.status(400).json(errors);
+    return res.status(400).json(errors);
   }
-  next();
+
+  return next();
 };
 
 exports.resetPassword = async (req, res, next) => {
