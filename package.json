@@ -9,8 +9,9 @@
   "scripts": {
     "prod": "node ./start.js",
     "watch": "nodemon ./src/start.js --ignore public/",
-    "start": "concurrently \"npm run watch\" \"npm run eslint\"",
-    "eslint": "esw -w . --ext .js",
+    "start": "concurrently \"npm run watch\" \"npm run eslintw\"",
+    "eslintw": "esw -w . --ext .js",
+    "eslint": "eslint . --ext .js",
     "test": "nyc mocha --timeout 100000 --exit",
     "createuser": "node ./src/data/loadInitialData.js --create-user",
     "deleteall": "node ./src/data/loadInitialData.js --delete-all",
