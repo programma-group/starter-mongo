@@ -8,6 +8,8 @@ It has by default:
   * Express Valudator
   * Mocha & Chai for testing
   * eslint Airbnb configuration
+  * Swagger
+  * Winston
   * Many more
 
 To run:
