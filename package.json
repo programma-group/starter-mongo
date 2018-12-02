@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "A starter for NodeJS apps using MongoDB",
   "main": "start.js",
+  "engines": {
+    "node": ">= 11.1.0"
+  },
   "directories": {
     "doc": "./src/docs"
   },
