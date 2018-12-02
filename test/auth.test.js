@@ -41,7 +41,8 @@ describe('The auth:', () => {
 
     chai.request(app).post('/register').send(data).end((err, res) => {
       res.should.have.status(400);
-      res.body.should.eql([
+      res.body.ok.should.eql(false);
+      res.body.response.should.eql([
         {
           location: 'body',
           param: 'email',
@@ -62,7 +63,8 @@ describe('The auth:', () => {
 
     chai.request(app).post('/register').send(data).end((err, res) => {
       res.should.have.status(400);
-      res.body.should.eql([
+      res.body.ok.should.eql(false);
+      res.body.response.should.eql([
         {
           location: 'body',
           param: 'name',
@@ -82,7 +84,8 @@ describe('The auth:', () => {
 
     chai.request(app).post('/register').send(data).end((err, res) => {
       res.should.have.status(400);
-      res.body.should.eql([
+      res.body.ok.should.eql(false);
+      res.body.response.should.eql([
         {
           location: 'body',
           param: 'password',
@@ -108,7 +111,8 @@ describe('The auth:', () => {
 
     chai.request(app).post('/register').send(data).end((err, res) => {
       res.should.have.status(400);
-      res.body.should.eql([
+      res.body.ok.should.eql(false);
+      res.body.response.should.eql([
         {
           location: 'body',
           param: 'password-confirm',
@@ -134,7 +138,8 @@ describe('The auth:', () => {
 
     chai.request(app).post('/register').send(data).end((err, res) => {
       res.should.have.status(400);
-      res.body.should.eql([
+      res.body.ok.should.eql(false);
+      res.body.response.should.eql([
         {
           location: 'body',
           param: 'password-confirm',
@@ -156,9 +161,10 @@ describe('The auth:', () => {
 
     chai.request(app).post('/register').send(data).end((err, res) => {
       res.should.have.status(200);
-      res.body.user.should.have.property('email').eql(data.email);
-      res.body.user.should.have.property('name').eql(data.name);
-      res.body.should.have.property('token');
+      res.body.ok.should.eql(true);
+      res.body.response.user.should.have.property('email').eql(data.email);
+      res.body.response.user.should.have.property('name').eql(data.name);
+      res.body.response.should.have.property('token');
 
       const sentMail = nodemailerMock.mock.sentMail();
       sentMail.length.should.eql(1);
@@ -190,8 +196,9 @@ describe('The auth:', () => {
 
     chai.request(app).post('/login').send(data).end((err, res) => {
       res.should.have.status(200);
-      res.body.user.should.have.property('email').eql(data.email);
-      res.body.should.have.property('token');
+      res.body.ok.should.eql(true);
+      res.body.response.user.should.have.property('email').eql(data.email);
+      res.body.response.should.have.property('token');
       done();
     });
   });
@@ -203,7 +210,8 @@ describe('The auth:', () => {
 
     chai.request(app).post('/password/lost').send(data).end((err, res) => {
       res.should.have.status(200);
-      res.body.should.eql(data);
+      res.body.response.should.eql(data);
+      res.body.ok.should.eql(true);
 
       const sentMail = nodemailerMock.mock.sentMail();
       sentMail.length.should.eql(0);
@@ -219,7 +227,8 @@ describe('The auth:', () => {
 
     chai.request(app).post('/password/lost').send(data).end((err, res) => {
       res.should.have.status(200);
-      res.body.should.eql(data);
+      res.body.response.should.eql(data);
+      res.body.ok.should.eql(true);
 
       const sentMail = nodemailerMock.mock.sentMail();
       sentMail.length.should.eql(1);
@@ -236,7 +245,8 @@ describe('The auth:', () => {
 
     chai.request(app).post('/password/verify').send(data).end((err, res) => {
       res.should.have.status(400);
-      res.body.should.have.property('isValid').eql(false);
+      res.body.response.should.have.property('isValid').eql(false);
+      res.body.ok.should.eql(false);
       done();
     });
   });
@@ -249,7 +259,8 @@ describe('The auth:', () => {
 
       chai.request(app).post('/password/verify').send(data).end((err, res) => {
         res.should.have.status(200);
-        res.body.should.have.property('isValid').eql(true);
+        res.body.response.should.have.property('isValid').eql(true);
+        res.body.ok.should.eql(true);
         done();
       });
     });
@@ -264,7 +275,8 @@ describe('The auth:', () => {
 
     chai.request(app).post('/password/reset').send(data).end((err, res) => {
       res.should.have.status(400);
-      res.body.should.have.property('isValid').eql(false);
+      res.body.response.should.have.property('isValid').eql(false);
+      res.body.ok.should.eql(false);
       done();
     });
   });
@@ -278,7 +290,8 @@ describe('The auth:', () => {
 
       chai.request(app).post('/password/reset').send(data).end((err, res) => {
         res.should.have.status(400);
-        res.body.should.eql([
+        res.body.ok.should.eql(false);
+        res.body.response.should.eql([
           {
             location: 'body',
             param: 'password',
@@ -305,7 +318,8 @@ describe('The auth:', () => {
 
       chai.request(app).post('/password/reset').send(data).end((err, res) => {
         res.should.have.status(400);
-        res.body.should.eql([
+        res.body.ok.should.eql(false);
+        res.body.response.should.eql([
           {
             location: 'body',
             param: 'password-confirm',
@@ -332,7 +346,8 @@ describe('The auth:', () => {
 
       chai.request(app).post('/password/reset').send(data).end((err, res) => {
         res.should.have.status(400);
-        res.body.should.eql([
+        res.body.ok.should.eql(false);
+        res.body.response.should.eql([
           {
             location: 'body',
             param: 'password-confirm',
@@ -355,7 +370,8 @@ describe('The auth:', () => {
 
       chai.request(app).post('/password/reset').send(data).end((err, res) => {
         res.should.have.status(200);
-        res.body.should.have.property('success').eql(true);
+        res.body.ok.should.eql(true);
+        res.body.response.should.have.property('success').eql(true);
 
         User.findOne({ email: 'john@doe.com' }).then((updatedUser) => {
           updatedUser.toJSON().should.not.have.property('resetPasswordToken');
@@ -368,7 +384,7 @@ describe('The auth:', () => {
   it('should return 404 if the wrong endpoint is called', (done) => {
     chai.request(app).get('/wrong-endpoint').end((err, res) => {
       res.should.have.status(404);
-      res.body.should.have.property('message').eql('This route does not exists');
+      res.body.should.have.property('errors').eql('This route does not exists');
       done();
     });
   });

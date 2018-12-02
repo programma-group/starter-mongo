@@ -3,6 +3,7 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const mail = require('../utils/mail');
+const { formatResponse } = require('../utils/common');
 
 const User = mongoose.model('User');
 
@@ -14,7 +15,7 @@ exports.login = (req, res) => {
     algorithm: 'HS256',
     expiresIn: '7d',
   });
-  return res.json({ user: req.user, token });
+  return res.json(formatResponse(true, { user: req.user, token }));
 };
 
 exports.lostPassword = async (req, res) => {
@@ -36,7 +37,7 @@ exports.lostPassword = async (req, res) => {
     });
   }
 
-  return res.json(req.body);
+  return res.json(formatResponse(true, req.body));
 };
 
 exports.validatePasswordToken = async (req, res, next) => {
@@ -46,14 +47,14 @@ exports.validatePasswordToken = async (req, res, next) => {
   });
 
   if (!user) {
-    return res.status(400).json({ isValid: false });
+    return res.status(400).json(formatResponse(false, { isValid: false }));
   }
   req.user = user;
   return next();
 };
 
 exports.validatePasswordReturn = (req, res) => {
-  res.json({ isValid: true });
+  res.json(formatResponse(true, { isValid: true }));
 };
 
 exports.validatePasswordInput = (req, res, next) => {
@@ -64,7 +65,7 @@ exports.validatePasswordInput = (req, res, next) => {
   const errors = req.validationErrors();
 
   if (errors) {
-    return res.status(400).json(errors);
+    return res.status(400).json(formatResponse(false, errors));
   }
 
   return next();
@@ -80,5 +81,5 @@ exports.cleanPasswordResetData = async (req, res) => {
   req.user.resetPasswordExpires = undefined;
   req.user.oneTimePassword = undefined;
   await req.user.save();
-  res.json({ success: true });
+  res.json(formatResponse(true, { success: true }));
 };

@@ -33,14 +33,17 @@ app.use(passport.initialize());
 app.use(passport.session());
 require('./utils/passport');
 
-app.use(expressWinston.logger({
-  transports: [
-    new winston.transports.Console(),
-  ],
-  format: winston.format.combine(
-    winston.format.json(),
-  ),
-}));
+/* istanbul ignore if */
+if (process.env.NODE_ENV !== 'test') {
+  app.use(expressWinston.logger({
+    transports: [
+      new winston.transports.Console(),
+    ],
+    format: winston.format.combine(
+      winston.format.json(),
+    ),
+  }));
+}
 
 const options = {
   explorer: true,
@@ -54,14 +57,17 @@ app.use(
   userRoutes,
 );
 
-app.use(expressWinston.errorLogger({
-  transports: [
-    new winston.transports.Console(),
-  ],
-  format: winston.format.combine(
-    winston.format.json(),
-  ),
-}));
+/* istanbul ignore if */
+if (process.env.NODE_ENV !== 'test') {
+  app.use(expressWinston.errorLogger({
+    transports: [
+      new winston.transports.Console(),
+    ],
+    format: winston.format.combine(
+      winston.format.json(),
+    ),
+  }));
+}
 
 app.use(errorHandlers.notFound);
 

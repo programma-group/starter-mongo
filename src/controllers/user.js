@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const mail = require('../utils/mail');
+const { formatResponse } = require('../utils/common');
 
 const User = mongoose.model('User');
 
@@ -20,7 +21,7 @@ exports.validateRegister = (req, res, next) => {
   const errors = req.validationErrors();
 
   if (errors) {
-    return res.status(400).json(errors);
+    return res.status(400).json(formatResponse(false, errors));
   }
 
   return next();
@@ -45,5 +46,5 @@ exports.register = async (req, res, next) => {
 };
 
 exports.getProfile = (req, res) => {
-  res.json(req.user);
+  res.json(formatResponse(true, req.user));
 };

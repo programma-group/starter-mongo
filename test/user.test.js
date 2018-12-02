@@ -36,10 +36,11 @@ describe('The user:', () => {
       const token = getJWTToken(user);
       chai.request(app).get('/profile').set('Authorization', `bearer ${token}`).end((err, res) => {
         res.should.have.status(200);
-        res.body.should.have.property('email').eql(user.email);
-        res.body.should.have.property('name').eql(user.name);
-        res.body.should.have.property('_id').eql(user._id.toString());
-        res.body.should.have.property('created');
+        res.body.ok.should.eql(true);
+        res.body.response.should.have.property('email').eql(user.email);
+        res.body.response.should.have.property('name').eql(user.name);
+        res.body.response.should.have.property('_id').eql(user._id.toString());
+        res.body.response.should.have.property('created');
         done();
       });
     });

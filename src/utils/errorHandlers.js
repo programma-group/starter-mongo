@@ -30,12 +30,15 @@ exports.notFound = (req, res, next) => {
 */
 
 exports.flashValidationErrors = (err, req, res, next) => {
-  /* istanbul ignore if */
   if (!err) {
     return next();
   }
 
-  return res.status(err.status || 400).json({ message: err.message });
+  return res.status(err.status || 400).json({
+    ok: false,
+    message: 'There was an internal error',
+    errors: err.message,
+  });
 };
 
 /*
@@ -45,8 +48,8 @@ exports.flashValidationErrors = (err, req, res, next) => {
 */
 /* istanbul ignore next */
 exports.productionErrors = (err, req, res) => {
-  res.status(err.status || 500);
-  res.json('error', {
+  res.status(err.status || 500).json('error', {
+    ok: false,
     message: err.message,
     error: {},
   });
