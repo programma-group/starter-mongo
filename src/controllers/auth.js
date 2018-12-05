@@ -12,7 +12,7 @@ const User = mongoose.model('User');
 exports.authenticate = passport.authenticate('local', { session: false });
 
 exports.login = (req, res) => {
-  const token = jwt.sign(req.user.toJSON(), process.env.SECRET, {
+  const token = jwt.sign({ id: req.user._id }, process.env.SECRET, {
     algorithm: 'HS256',
     expiresIn: '7d',
   });
