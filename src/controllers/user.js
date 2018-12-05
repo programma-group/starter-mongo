@@ -1,31 +1,46 @@
 const mongoose = require('mongoose');
+const { checkSchema } = require('express-validator/check');
+const validator = require('validator');
+
 const mail = require('../utils/mail');
-const { formatResponse } = require('../utils/common');
+const { formatResponse, equalPasswordValidator } = require('../utils/common');
 
 const User = mongoose.model('User');
 
-exports.validateRegister = (req, res, next) => {
-  req.checkBody('email', 'That Email is not valid!').isEmail();
-  req.sanitizeBody('email').normalizeEmail({
-    remove_dots: false,
-    remove_extension: false,
-    gmail_remove_subaddress: false,
-  });
-  req.sanitizeBody('name');
-
-  req.checkBody('name', 'Name cannot be blank!').notEmpty();
-  req.checkBody('password', 'Password cannot be blank!').notEmpty();
-  req.checkBody('password-confirm', 'Confirmed password cannot be blank!').notEmpty();
-  req.checkBody('password-confirm', 'Your passwords do not match').equals(req.body.password);
-
-  const errors = req.validationErrors();
-
-  if (errors) {
-    return res.status(400).json(formatResponse(false, errors));
-  }
-
-  return next();
-};
+exports.validateRegisterSchema = checkSchema({
+  email: {
+    in: ['body'],
+    exists: {
+      errorMessage: 'Email cannot be blank!',
+    },
+    custom: {
+      options: value => validator.isEmail(value),
+      errorMessage: 'This email is not valid!',
+    },
+  },
+  name: {
+    in: ['body'],
+    exists: {
+      errorMessage: 'Name cannot be blank!',
+    },
+  },
+  password: {
+    in: ['body'],
+    exists: {
+      errorMessage: 'Password cannot be blank!',
+    },
+  },
+  'password-confirm': {
+    in: ['body'],
+    exists: {
+      errorMessage: 'Confirmed password cannot be blank!',
+    },
+    custom: {
+      options: equalPasswordValidator,
+      errorMessage: 'Your passwords do not match',
+    },
+  },
+});
 
 exports.register = async (req, res, next) => {
   const user = new User({
