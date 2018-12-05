@@ -12,7 +12,7 @@
   "lines": 85,
   "functions": 99,
   "reporter": [
-    "html",
+    "lcov",
     "text-summary"
   ],
   "cache": true,
