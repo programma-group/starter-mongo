@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 const passport = require('passport');
+const { checkSchema } = require('express-validator/check');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const mail = require('../utils/mail');
-const { formatResponse } = require('../utils/common');
+const { formatResponse, equalPasswordValidator } = require('../utils/common');
 
 const User = mongoose.model('User');
 
@@ -57,19 +58,24 @@ exports.validatePasswordReturn = (req, res) => {
   res.json(formatResponse(true, { isValid: true }));
 };
 
-exports.validatePasswordInput = (req, res, next) => {
-  req.checkBody('password', 'Password cannot be blank!').notEmpty();
-  req.checkBody('password-confirm', 'Confirmed password cannot be blank!').notEmpty();
-  req.checkBody('password-confirm', 'Your passwords do not match').equals(req.body.password);
-
-  const errors = req.validationErrors();
-
-  if (errors) {
-    return res.status(400).json(formatResponse(false, errors));
-  }
-
-  return next();
-};
+exports.validatePasswordSchema = checkSchema({
+  password: {
+    in: ['body'],
+    exists: {
+      errorMessage: 'Password cannot be blank!',
+    },
+  },
+  'password-confirm': {
+    in: ['body'],
+    exists: {
+      errorMessage: 'Confirmed password cannot be blank!',
+    },
+    custom: {
+      options: equalPasswordValidator,
+      errorMessage: 'Your passwords do not match',
+    },
+  },
+});
 
 exports.resetPassword = async (req, res, next) => {
   await req.user.setPassword(req.body.password);
