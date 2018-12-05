@@ -5,11 +5,11 @@ const expressValidator = require('express-validator');
 const helmet = require('helmet');
 const passport = require('passport');
 const expressWinston = require('express-winston');
-const winston = require('winston');
 const swaggerUi = require('swagger-ui-express');
 
 const swaggerSpec = require('./utils/swagger');
 const errorHandlers = require('./utils/errorHandlers');
+const { winstonConfig } = require('./utils/config');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
 
@@ -35,14 +35,7 @@ require('./utils/passport');
 
 /* istanbul ignore if */
 if (process.env.NODE_ENV !== 'test') {
-  app.use(expressWinston.logger({
-    transports: [
-      new winston.transports.Console(),
-    ],
-    format: winston.format.combine(
-      winston.format.json(),
-    ),
-  }));
+  app.use(expressWinston.logger(winstonConfig));
 }
 
 const options = {
@@ -59,14 +52,7 @@ app.use(
 
 /* istanbul ignore if */
 if (process.env.NODE_ENV !== 'test') {
-  app.use(expressWinston.errorLogger({
-    transports: [
-      new winston.transports.Console(),
-    ],
-    format: winston.format.combine(
-      winston.format.json(),
-    ),
-  }));
+  app.use(expressWinston.errorLogger(winstonConfig));
 }
 
 app.use(errorHandlers.notFound);
