@@ -3,11 +3,14 @@ const { catchErrors } = require('../utils/errorHandlers');
 const authController = require('../controllers/auth');
 const userController = require('../controllers/user');
 
+const { validatorMiddleware } = require('../utils/common');
+
 const router = express.Router();
 
 router.post(
   '/register',
-  userController.validateRegister,
+  userController.validateRegisterSchema,
+  validatorMiddleware,
   catchErrors(userController.register),
   authController.authenticate,
   authController.login,
@@ -23,7 +26,8 @@ router.post(
 router.post(
   '/password/reset',
   catchErrors(authController.validatePasswordToken),
-  authController.validatePasswordInput,
+  authController.validatePasswordSchema,
+  validatorMiddleware,
   catchErrors(authController.resetPassword),
   catchErrors(authController.cleanPasswordResetData),
 );

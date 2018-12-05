@@ -40,16 +40,9 @@ describe('The auth:', () => {
     };
 
     chai.request(app).post('/register').send(data).end((err, res) => {
-      res.should.have.status(400);
+      res.should.have.status(422);
       res.body.ok.should.eql(false);
-      res.body.response.should.eql([
-        {
-          location: 'body',
-          param: 'email',
-          msg: 'That Email is not valid!',
-          value: '@john',
-        },
-      ]);
+      res.body.response.should.eql(['email: This email is not valid!']);
       done();
     });
   });
@@ -62,15 +55,9 @@ describe('The auth:', () => {
     };
 
     chai.request(app).post('/register').send(data).end((err, res) => {
-      res.should.have.status(400);
+      res.should.have.status(422);
       res.body.ok.should.eql(false);
-      res.body.response.should.eql([
-        {
-          location: 'body',
-          param: 'name',
-          msg: 'Name cannot be blank!',
-        },
-      ]);
+      res.body.response.should.eql(['name: Name cannot be blank!']);
       done();
     });
   });
@@ -83,20 +70,11 @@ describe('The auth:', () => {
     };
 
     chai.request(app).post('/register').send(data).end((err, res) => {
-      res.should.have.status(400);
+      res.should.have.status(422);
       res.body.ok.should.eql(false);
       res.body.response.should.eql([
-        {
-          location: 'body',
-          param: 'password',
-          msg: 'Password cannot be blank!',
-        },
-        {
-          location: 'body',
-          param: 'password-confirm',
-          msg: 'Your passwords do not match',
-          value: 'abc12345678',
-        },
+        'password: Password cannot be blank!',
+        'password-confirm: Your passwords do not match',
       ]);
       done();
     });
@@ -110,19 +88,11 @@ describe('The auth:', () => {
     };
 
     chai.request(app).post('/register').send(data).end((err, res) => {
-      res.should.have.status(400);
+      res.should.have.status(422);
       res.body.ok.should.eql(false);
       res.body.response.should.eql([
-        {
-          location: 'body',
-          param: 'password-confirm',
-          msg: 'Confirmed password cannot be blank!',
-        },
-        {
-          location: 'body',
-          param: 'password-confirm',
-          msg: 'Your passwords do not match',
-        },
+        'password-confirm: Confirmed password cannot be blank!',
+        'password-confirm: Your passwords do not match',
       ]);
       done();
     });
@@ -137,16 +107,9 @@ describe('The auth:', () => {
     };
 
     chai.request(app).post('/register').send(data).end((err, res) => {
-      res.should.have.status(400);
+      res.should.have.status(422);
       res.body.ok.should.eql(false);
-      res.body.response.should.eql([
-        {
-          location: 'body',
-          param: 'password-confirm',
-          msg: 'Your passwords do not match',
-          value: 'ABC12345678',
-        },
-      ]);
+      res.body.response.should.eql(['password-confirm: Your passwords do not match']);
       done();
     });
   });
@@ -289,20 +252,11 @@ describe('The auth:', () => {
       };
 
       chai.request(app).post('/password/reset').send(data).end((err, res) => {
-        res.should.have.status(400);
+        res.should.have.status(422);
         res.body.ok.should.eql(false);
         res.body.response.should.eql([
-          {
-            location: 'body',
-            param: 'password',
-            msg: 'Password cannot be blank!',
-          },
-          {
-            location: 'body',
-            param: 'password-confirm',
-            msg: 'Your passwords do not match',
-            value: 'abc12345678',
-          },
+          'password: Password cannot be blank!',
+          'password-confirm: Your passwords do not match',
         ]);
         done();
       });
@@ -317,19 +271,11 @@ describe('The auth:', () => {
       };
 
       chai.request(app).post('/password/reset').send(data).end((err, res) => {
-        res.should.have.status(400);
+        res.should.have.status(422);
         res.body.ok.should.eql(false);
         res.body.response.should.eql([
-          {
-            location: 'body',
-            param: 'password-confirm',
-            msg: 'Confirmed password cannot be blank!',
-          },
-          {
-            location: 'body',
-            param: 'password-confirm',
-            msg: 'Your passwords do not match',
-          },
+          'password-confirm: Confirmed password cannot be blank!',
+          'password-confirm: Your passwords do not match',
         ]);
         done();
       });
@@ -345,16 +291,9 @@ describe('The auth:', () => {
       };
 
       chai.request(app).post('/password/reset').send(data).end((err, res) => {
-        res.should.have.status(400);
+        res.should.have.status(422);
         res.body.ok.should.eql(false);
-        res.body.response.should.eql([
-          {
-            location: 'body',
-            param: 'password-confirm',
-            msg: 'Your passwords do not match',
-            value: 'ABC12345678',
-          },
-        ]);
+        res.body.response.should.eql(['password-confirm: Your passwords do not match']);
         done();
       });
     });
