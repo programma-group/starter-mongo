@@ -49,7 +49,7 @@ jobs:
           # This is a CircleCI job that deploys the code on master to the wherever the client wants
           # This can be AWS, DigitalOcean, Linode, etc.
           name: Deploy staging
-          # command:
+          command: echo This will be added later, depending on the project
 workflows:
   version: 2
   build-deploy:
