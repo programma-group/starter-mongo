@@ -1,7 +1,7 @@
 /* eslint no-console: off */
 const mongoose = require('mongoose');
 
-require('dotenv').config({ path: 'variables.env' });
+require('dotenv').config();
 
 let database;
 let port;
