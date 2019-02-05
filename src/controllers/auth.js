@@ -8,7 +8,6 @@ const { formatResponse, equalPasswordValidator } = require('../utils/common');
 
 const User = mongoose.model('User');
 
-
 exports.authenticate = passport.authenticate('local', { session: false });
 
 exports.login = (req, res) => {

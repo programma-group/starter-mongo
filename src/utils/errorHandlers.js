@@ -7,7 +7,7 @@
   next()
 */
 
-exports.catchErrors = fn => function (req, res, next) { // eslint-disable-line func-names
+exports.catchErrors = fn => (req, res, next) => {
   return fn(req, res, next).catch(next);
 };
 
