@@ -44,7 +44,7 @@ app.use('/', authRoutes);
 app.use(
   '/profile',
   passport.authenticate('jwt', { session: false }),
-  userRoutes,
+  userRoutes
 );
 
 /* istanbul ignore if */

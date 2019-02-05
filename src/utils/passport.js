@@ -18,7 +18,9 @@ const options = {
   algorithms: ['HS256'],
 };
 
-passport.use(new JwtStrategy(options, async (jwt, done) => {
-  const user = await User.findOne({ _id: jwt._id });
-  return done(null, user);
-}));
+passport.use(
+  new JwtStrategy(options, async (jwt, done) => {
+    const user = await User.findOne({ _id: jwt._id });
+    return done(null, user);
+  })
+);

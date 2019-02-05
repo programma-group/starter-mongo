@@ -1,6 +1,8 @@
 /* eslint no-console: off */
 const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '/../../variables.env') });
+require('dotenv').config({
+  path: path.join(__dirname, '/../../variables.env'),
+});
 const mongoose = require('mongoose');
 
 mongoose.connect(process.env.DATABASE, {
