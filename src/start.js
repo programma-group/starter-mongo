@@ -20,7 +20,7 @@ mongoose.connect(database, {
 });
 
 mongoose.Promise = global.Promise;
-mongoose.connection.on('error', (err) => {
+mongoose.connection.on('error', err => {
   console.error(err.message);
 });
 

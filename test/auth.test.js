@@ -31,7 +31,7 @@ describe('The auth:', () => {
     mockery.disable();
   });
 
-  it('should not register a new account if the email is wrong', (done) => {
+  it('should not register a new account if the email is wrong', done => {
     const data = {
       email: 'john',
       name: 'John Doe',
@@ -39,219 +39,49 @@ describe('The auth:', () => {
       'password-confirm': 'abc12345678',
     };
 
-    chai.request(app).post('/register').send(data).end((err, res) => {
-      res.should.have.status(422);
-      res.body.ok.should.eql(false);
-      res.body.response.should.eql(['email: This email is not valid!']);
-      done();
-    });
-  });
-
-  it('should not register a new account if there is no name', (done) => {
-    const data = {
-      email: 'john@doe.com',
-      password: 'abc12345678',
-      'password-confirm': 'abc12345678',
-    };
-
-    chai.request(app).post('/register').send(data).end((err, res) => {
-      res.should.have.status(422);
-      res.body.ok.should.eql(false);
-      res.body.response.should.eql(['name: Name cannot be blank!']);
-      done();
-    });
-  });
-
-  it('should not register a new account if there is no password', (done) => {
-    const data = {
-      email: 'john@doe.com',
-      name: 'John Doe',
-      'password-confirm': 'abc12345678',
-    };
-
-    chai.request(app).post('/register').send(data).end((err, res) => {
-      res.should.have.status(422);
-      res.body.ok.should.eql(false);
-      res.body.response.should.eql([
-        'password: Password cannot be blank!',
-        'password-confirm: Your passwords do not match',
-      ]);
-      done();
-    });
-  });
-
-  it('should not register a new account if there is no password confirmation', (done) => {
-    const data = {
-      email: 'john@doe.com',
-      name: 'John Doe',
-      password: 'abc12345678',
-    };
-
-    chai.request(app).post('/register').send(data).end((err, res) => {
-      res.should.have.status(422);
-      res.body.ok.should.eql(false);
-      res.body.response.should.eql([
-        'password-confirm: Confirmed password cannot be blank!',
-        'password-confirm: Your passwords do not match',
-      ]);
-      done();
-    });
-  });
-
-  it('should not register a new account if the passwords do not match', (done) => {
-    const data = {
-      email: 'john@doe.com',
-      name: 'John Doe',
-      password: 'abc12345678',
-      'password-confirm': 'ABC12345678',
-    };
-
-    chai.request(app).post('/register').send(data).end((err, res) => {
-      res.should.have.status(422);
-      res.body.ok.should.eql(false);
-      res.body.response.should.eql(['password-confirm: Your passwords do not match']);
-      done();
-    });
-  });
-
-  it('should register a new account', (done) => {
-    const data = {
-      email: 'john@doe.com',
-      name: 'John Doe',
-      password: 'abc12345678',
-      'password-confirm': 'abc12345678',
-    };
-
-    chai.request(app).post('/register').send(data).end((err, res) => {
-      res.should.have.status(200);
-      res.body.ok.should.eql(true);
-      res.body.response.user.should.have.property('email').eql(data.email);
-      res.body.response.user.should.have.property('name').eql(data.name);
-      res.body.response.should.have.property('token');
-
-      const sentMail = nodemailerMock.mock.sentMail();
-      sentMail.length.should.eql(1);
-      sentMail[0].should.have.property('subject').eql('Welcome to our starter app!');
-
-      done();
-    });
-  });
-
-  it('should not log me in if the data is incorrect', (done) => {
-    const data = {
-      email: 'john@doe.com',
-      password: 'ABC12345678',
-    };
-
-    chai.request(app).post('/login').send(data).end((err, res) => {
-      res.should.have.status(401);
-      res.body.should.not.have.property('token');
-      res.body.should.not.have.property('user');
-      done();
-    });
-  });
-
-  it('should log me in', (done) => {
-    const data = {
-      email: 'john@doe.com',
-      password: 'abc12345678',
-    };
-
-    chai.request(app).post('/login').send(data).end((err, res) => {
-      res.should.have.status(200);
-      res.body.ok.should.eql(true);
-      res.body.response.user.should.have.property('email').eql(data.email);
-      res.body.response.should.have.property('token');
-      done();
-    });
-  });
-
-  it('should not send a lost password email if the email is not on the database', (done) => {
-    const data = {
-      email: 'jane@doe.com',
-    };
-
-    chai.request(app).post('/password/lost').send(data).end((err, res) => {
-      res.should.have.status(200);
-      res.body.response.should.eql(data);
-      res.body.ok.should.eql(true);
-
-      const sentMail = nodemailerMock.mock.sentMail();
-      sentMail.length.should.eql(0);
-
-      done();
-    });
-  });
-
-  it('should send a lost password email', (done) => {
-    const data = {
-      email: 'john@doe.com',
-    };
-
-    chai.request(app).post('/password/lost').send(data).end((err, res) => {
-      res.should.have.status(200);
-      res.body.response.should.eql(data);
-      res.body.ok.should.eql(true);
-
-      const sentMail = nodemailerMock.mock.sentMail();
-      sentMail.length.should.eql(1);
-      sentMail[0].should.have.property('subject').eql('Password Reset');
-
-      done();
-    });
-  });
-
-  it('should send an error if a reset password token is invalid', (done) => {
-    const data = {
-      token: 'abc123',
-    };
-
-    chai.request(app).post('/password/verify').send(data).end((err, res) => {
-      res.should.have.status(400);
-      res.body.response.should.have.property('isValid').eql(false);
-      res.body.ok.should.eql(false);
-      done();
-    });
-  });
-
-  it('should verify if a reset password token is valid', (done) => {
-    User.findOne({ email: 'john@doe.com' }).then((user) => {
-      const data = {
-        token: user.resetPasswordToken,
-      };
-
-      chai.request(app).post('/password/verify').send(data).end((err, res) => {
-        res.should.have.status(200);
-        res.body.response.should.have.property('isValid').eql(true);
-        res.body.ok.should.eql(true);
+    chai
+      .request(app)
+      .post('/register')
+      .send(data)
+      .end((err, res) => {
+        res.should.have.status(422);
+        res.body.ok.should.eql(false);
+        res.body.response.should.eql(['email: This email is not valid!']);
         done();
       });
-    });
   });
 
-  it('should not let me update my password if the token is invalid', (done) => {
+  it('should not register a new account if there is no name', done => {
     const data = {
-      token: 'abc123',
+      email: 'john@doe.com',
       password: 'abc12345678',
       'password-confirm': 'abc12345678',
     };
 
-    chai.request(app).post('/password/reset').send(data).end((err, res) => {
-      res.should.have.status(400);
-      res.body.response.should.have.property('isValid').eql(false);
-      res.body.ok.should.eql(false);
-      done();
-    });
+    chai
+      .request(app)
+      .post('/register')
+      .send(data)
+      .end((err, res) => {
+        res.should.have.status(422);
+        res.body.ok.should.eql(false);
+        res.body.response.should.eql(['name: Name cannot be blank!']);
+        done();
+      });
   });
 
-  it('should not let me update my password if the password is not specified', (done) => {
-    User.findOne({ email: 'john@doe.com' }).then((user) => {
-      const data = {
-        token: user.resetPasswordToken,
-        'password-confirm': 'abc12345678',
-      };
+  it('should not register a new account if there is no password', done => {
+    const data = {
+      email: 'john@doe.com',
+      name: 'John Doe',
+      'password-confirm': 'abc12345678',
+    };
 
-      chai.request(app).post('/password/reset').send(data).end((err, res) => {
+    chai
+      .request(app)
+      .post('/register')
+      .send(data)
+      .end((err, res) => {
         res.should.have.status(422);
         res.body.ok.should.eql(false);
         res.body.response.should.eql([
@@ -260,17 +90,20 @@ describe('The auth:', () => {
         ]);
         done();
       });
-    });
   });
 
-  it('should not let me update my password if the password confirmation is not specified', (done) => {
-    User.findOne({ email: 'john@doe.com' }).then((user) => {
-      const data = {
-        token: user.resetPasswordToken,
-        password: 'abc12345678',
-      };
+  it('should not register a new account if there is no password confirmation', done => {
+    const data = {
+      email: 'john@doe.com',
+      name: 'John Doe',
+      password: 'abc12345678',
+    };
 
-      chai.request(app).post('/password/reset').send(data).end((err, res) => {
+    chai
+      .request(app)
+      .post('/register')
+      .send(data)
+      .end((err, res) => {
         res.should.have.status(422);
         res.body.ok.should.eql(false);
         res.body.response.should.eql([
@@ -279,52 +112,298 @@ describe('The auth:', () => {
         ]);
         done();
       });
+  });
+
+  it('should not register a new account if the passwords do not match', done => {
+    const data = {
+      email: 'john@doe.com',
+      name: 'John Doe',
+      password: 'abc12345678',
+      'password-confirm': 'ABC12345678',
+    };
+
+    chai
+      .request(app)
+      .post('/register')
+      .send(data)
+      .end((err, res) => {
+        res.should.have.status(422);
+        res.body.ok.should.eql(false);
+        res.body.response.should.eql([
+          'password-confirm: Your passwords do not match',
+        ]);
+        done();
+      });
+  });
+
+  it('should register a new account', done => {
+    const data = {
+      email: 'john@doe.com',
+      name: 'John Doe',
+      password: 'abc12345678',
+      'password-confirm': 'abc12345678',
+    };
+
+    chai
+      .request(app)
+      .post('/register')
+      .send(data)
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.ok.should.eql(true);
+        res.body.response.user.should.have.property('email').eql(data.email);
+        res.body.response.user.should.have.property('name').eql(data.name);
+        res.body.response.should.have.property('token');
+
+        const sentMail = nodemailerMock.mock.sentMail();
+        sentMail.length.should.eql(1);
+        sentMail[0].should.have
+          .property('subject')
+          .eql('Welcome to our starter app!');
+
+        done();
+      });
+  });
+
+  it('should not log me in if the data is incorrect', done => {
+    const data = {
+      email: 'john@doe.com',
+      password: 'ABC12345678',
+    };
+
+    chai
+      .request(app)
+      .post('/login')
+      .send(data)
+      .end((err, res) => {
+        res.should.have.status(401);
+        res.body.should.not.have.property('token');
+        res.body.should.not.have.property('user');
+        done();
+      });
+  });
+
+  it('should log me in', done => {
+    const data = {
+      email: 'john@doe.com',
+      password: 'abc12345678',
+    };
+
+    chai
+      .request(app)
+      .post('/login')
+      .send(data)
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.ok.should.eql(true);
+        res.body.response.user.should.have.property('email').eql(data.email);
+        res.body.response.should.have.property('token');
+        done();
+      });
+  });
+
+  it('should not send a lost password email if the email is not on the database', done => {
+    const data = {
+      email: 'jane@doe.com',
+    };
+
+    chai
+      .request(app)
+      .post('/password/lost')
+      .send(data)
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.response.should.eql(data);
+        res.body.ok.should.eql(true);
+
+        const sentMail = nodemailerMock.mock.sentMail();
+        sentMail.length.should.eql(0);
+
+        done();
+      });
+  });
+
+  it('should send a lost password email', done => {
+    const data = {
+      email: 'john@doe.com',
+    };
+
+    chai
+      .request(app)
+      .post('/password/lost')
+      .send(data)
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.response.should.eql(data);
+        res.body.ok.should.eql(true);
+
+        const sentMail = nodemailerMock.mock.sentMail();
+        sentMail.length.should.eql(1);
+        sentMail[0].should.have.property('subject').eql('Password Reset');
+
+        done();
+      });
+  });
+
+  it('should send an error if a reset password token is invalid', done => {
+    const data = {
+      token: 'abc123',
+    };
+
+    chai
+      .request(app)
+      .post('/password/verify')
+      .send(data)
+      .end((err, res) => {
+        res.should.have.status(400);
+        res.body.response.should.have.property('isValid').eql(false);
+        res.body.ok.should.eql(false);
+        done();
+      });
+  });
+
+  it('should verify if a reset password token is valid', done => {
+    User.findOne({ email: 'john@doe.com' }).then(user => {
+      const data = {
+        token: user.resetPasswordToken,
+      };
+
+      chai
+        .request(app)
+        .post('/password/verify')
+        .send(data)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.response.should.have.property('isValid').eql(true);
+          res.body.ok.should.eql(true);
+          done();
+        });
     });
   });
 
-  it('should not let me update my password if the password and the password confirmation do not match', (done) => {
-    User.findOne({ email: 'john@doe.com' }).then((user) => {
+  it('should not let me update my password if the token is invalid', done => {
+    const data = {
+      token: 'abc123',
+      password: 'abc12345678',
+      'password-confirm': 'abc12345678',
+    };
+
+    chai
+      .request(app)
+      .post('/password/reset')
+      .send(data)
+      .end((err, res) => {
+        res.should.have.status(400);
+        res.body.response.should.have.property('isValid').eql(false);
+        res.body.ok.should.eql(false);
+        done();
+      });
+  });
+
+  it('should not let me update my password if the password is not specified', done => {
+    User.findOne({ email: 'john@doe.com' }).then(user => {
+      const data = {
+        token: user.resetPasswordToken,
+        'password-confirm': 'abc12345678',
+      };
+
+      chai
+        .request(app)
+        .post('/password/reset')
+        .send(data)
+        .end((err, res) => {
+          res.should.have.status(422);
+          res.body.ok.should.eql(false);
+          res.body.response.should.eql([
+            'password: Password cannot be blank!',
+            'password-confirm: Your passwords do not match',
+          ]);
+          done();
+        });
+    });
+  });
+
+  it('should not let me update my password if the password confirmation is not specified', done => {
+    User.findOne({ email: 'john@doe.com' }).then(user => {
+      const data = {
+        token: user.resetPasswordToken,
+        password: 'abc12345678',
+      };
+
+      chai
+        .request(app)
+        .post('/password/reset')
+        .send(data)
+        .end((err, res) => {
+          res.should.have.status(422);
+          res.body.ok.should.eql(false);
+          res.body.response.should.eql([
+            'password-confirm: Confirmed password cannot be blank!',
+            'password-confirm: Your passwords do not match',
+          ]);
+          done();
+        });
+    });
+  });
+
+  it('should not let me update my password if the password and the password confirmation do not match', done => {
+    User.findOne({ email: 'john@doe.com' }).then(user => {
       const data = {
         token: user.resetPasswordToken,
         password: 'abc12345678',
         'password-confirm': 'ABC12345678',
       };
 
-      chai.request(app).post('/password/reset').send(data).end((err, res) => {
-        res.should.have.status(422);
-        res.body.ok.should.eql(false);
-        res.body.response.should.eql(['password-confirm: Your passwords do not match']);
-        done();
-      });
+      chai
+        .request(app)
+        .post('/password/reset')
+        .send(data)
+        .end((err, res) => {
+          res.should.have.status(422);
+          res.body.ok.should.eql(false);
+          res.body.response.should.eql([
+            'password-confirm: Your passwords do not match',
+          ]);
+          done();
+        });
     });
   });
 
-  it('should let me update my password', (done) => {
-    User.findOne({ email: 'john@doe.com' }).then((user) => {
+  it('should let me update my password', done => {
+    User.findOne({ email: 'john@doe.com' }).then(user => {
       const data = {
         token: user.resetPasswordToken,
         password: 'abc12345678',
         'password-confirm': 'abc12345678',
       };
 
-      chai.request(app).post('/password/reset').send(data).end((err, res) => {
-        res.should.have.status(200);
-        res.body.ok.should.eql(true);
-        res.body.response.should.have.property('success').eql(true);
+      chai
+        .request(app)
+        .post('/password/reset')
+        .send(data)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.ok.should.eql(true);
+          res.body.response.should.have.property('success').eql(true);
 
-        User.findOne({ email: 'john@doe.com' }).then((updatedUser) => {
-          updatedUser.toJSON().should.not.have.property('resetPasswordToken');
-          done();
+          User.findOne({ email: 'john@doe.com' }).then(updatedUser => {
+            updatedUser.toJSON().should.not.have.property('resetPasswordToken');
+            done();
+          });
         });
-      });
     });
   });
 
-  it('should return 404 if the wrong endpoint is called', (done) => {
-    chai.request(app).get('/wrong-endpoint').end((err, res) => {
-      res.should.have.status(404);
-      res.body.should.have.property('errors').eql('This route does not exists');
-      done();
-    });
+  it('should return 404 if the wrong endpoint is called', done => {
+    chai
+      .request(app)
+      .get('/wrong-endpoint')
+      .end((err, res) => {
+        res.should.have.status(404);
+        res.body.should.have
+          .property('errors')
+          .eql('This route does not exists');
+        done();
+      });
   });
 });

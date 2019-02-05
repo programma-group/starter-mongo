@@ -4,7 +4,8 @@ const swaggerDefinition = {
   info: {
     title: 'Express/MongoDB starter app',
     version: '0.0.1',
-    description: 'This is the REST Documentation for Programma group Mongodb starter',
+    description:
+      'This is the REST Documentation for Programma group Mongodb starter',
   },
   host: `${process.env.URL}:${process.env.PORT}`,
   securityDefinitions: {

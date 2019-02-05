@@ -13,7 +13,7 @@ router.post(
   validatorMiddleware,
   catchErrors(userController.register),
   authController.authenticate,
-  authController.login,
+  authController.login
 );
 
 router.post('/login', authController.authenticate, authController.login);
@@ -21,7 +21,7 @@ router.post('/password/lost', catchErrors(authController.lostPassword));
 router.post(
   '/password/verify',
   catchErrors(authController.validatePasswordToken),
-  authController.validatePasswordReturn,
+  authController.validatePasswordReturn
 );
 router.post(
   '/password/reset',
@@ -29,7 +29,7 @@ router.post(
   authController.validatePasswordSchema,
   validatorMiddleware,
   catchErrors(authController.resetPassword),
-  catchErrors(authController.cleanPasswordResetData),
+  catchErrors(authController.cleanPasswordResetData)
 );
 
 module.exports = router;

@@ -24,25 +24,34 @@ describe('The user:', () => {
     await User.register(user, 'abc12345678');
   });
 
-  it('should not return a user profile if no token is provided', (done) => {
-    chai.request(app).get('/profile').end((err, res) => {
-      res.should.have.status(401);
-      done();
-    });
-  });
-
-  it('should return the current user profile', (done) => {
-    User.findOne({ email: 'john@doe.com' }).then((user) => {
-      const token = getJWTToken(user);
-      chai.request(app).get('/profile').set('Authorization', `bearer ${token}`).end((err, res) => {
-        res.should.have.status(200);
-        res.body.ok.should.eql(true);
-        res.body.response.should.have.property('email').eql(user.email);
-        res.body.response.should.have.property('name').eql(user.name);
-        res.body.response.should.have.property('_id').eql(user._id.toString());
-        res.body.response.should.have.property('created');
+  it('should not return a user profile if no token is provided', done => {
+    chai
+      .request(app)
+      .get('/profile')
+      .end((err, res) => {
+        res.should.have.status(401);
         done();
       });
+  });
+
+  it('should return the current user profile', done => {
+    User.findOne({ email: 'john@doe.com' }).then(user => {
+      const token = getJWTToken(user);
+      chai
+        .request(app)
+        .get('/profile')
+        .set('Authorization', `bearer ${token}`)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.ok.should.eql(true);
+          res.body.response.should.have.property('email').eql(user.email);
+          res.body.response.should.have.property('name').eql(user.name);
+          res.body.response.should.have
+            .property('_id')
+            .eql(user._id.toString());
+          res.body.response.should.have.property('created');
+          done();
+        });
     });
   });
 });
